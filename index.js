@@ -62,13 +62,14 @@ app.post('/burn/ass', upload.fields([
   }
 });
 
-// === 关键：启动 Node.js 服务器 ===
-const port = Number(process.env.PORT) || 3000;
+// ====================== 启动服务器（Railway 专用） ======================
+const port = Number(process.env.PORT) || 8080;
 
 console.log(`🚀 Server starting on port ${port} (0.0.0.0)`);
 
-Bun.serve ? 
-  Bun.serve({ fetch: app.fetch, port }) :   // 如果意外用了 Bun
-  app.listen(port, '0.0.0.0', () => {
-    console.log(`✅ Server is running on http://0.0.0.0:${port}`);
-  });
+app.listen({
+  port: port,
+  hostname: '0.0.0.0'   // 必须绑定 0.0.0.0，否则 Railway 会 502
+}, (info) => {
+  console.log(`✅ Server is running on http://0.0.0.0:${info.port}`);
+});
