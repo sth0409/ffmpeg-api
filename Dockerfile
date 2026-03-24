@@ -8,14 +8,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# 先复制 package.json 并安装依赖（利用 Docker 缓存加速）
+# 先复制 package.json 并安装依赖
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install --production     # ←←← 改成这一行（去掉 ci）
 
 # 复制所有代码
 COPY . .
 
 EXPOSE 3000
 
-# Railway 会自动设置 PORT 环境变量
 CMD ["node", "index.js"]
