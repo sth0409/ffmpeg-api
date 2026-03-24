@@ -3,11 +3,12 @@ import multer from 'multer';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs/promises';
+import { serve } from '@hono/node-server';   // ← 新增这一行
 import path from 'path';
 
 const app = new Hono();
 const execAsync = promisify(exec);
-
+const port = Number(process.env.PORT) || 8080;
 const upload = multer({ dest: '/tmp/uploads/' });
 
 // 健康检查（先测试这个）
@@ -62,14 +63,18 @@ app.post('/burn/ass', upload.fields([
   }
 });
 
-// ====================== 启动服务器（Railway 专用） ======================
-const port = Number(process.env.PORT) || 8080;
+// ====================== 启动服务器（Railway + Hono 正确写法） ======================
 
-console.log(`🚀 Server starting on port ${port} (0.0.0.0)`);
 
-app.listen({
+//const app = new Hono();   // 确保 app 在这里定义（如果前面已经定义了就不要重复）
+
+// ... 这里放你所有的路由代码（/ping 和 /burn/ass）...
+
+// 启动服务器
+serve({
+  fetch: app.fetch,
   port: port,
-  hostname: '0.0.0.0'   // 必须绑定 0.0.0.0，否则 Railway 会 502
+  hostname: '0.0.0.0'     // 必须绑定 0.0.0.0
 }, (info) => {
   console.log(`✅ Server is running on http://0.0.0.0:${info.port}`);
 });
