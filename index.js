@@ -47,9 +47,11 @@ app.post('/burn/ass', async (c) => {
     }
 
     // FFmpeg 硬烧字幕命令
-    const command = `ffmpeg -i "${inputVideo}" -vf "ass='${inputAss}':fontsdir='${fontsDir}'" \
-      -c:v libx264 -preset medium -crf 23 \
-      -c:a aac -b:a 128k "${outputPath}" -y`;
+const command = `ffmpeg -i "${inputVideo}" \
+  -vf "scale=720:-1,ass='${inputAss}':fontsdir='${fontsDir}'" \
+  -c:v libx264 -preset veryfast -crf 28 \
+  -c:a aac -b:a 128k \
+  "${outputPath}" -y`;
 
     console.log('执行 FFmpeg:', command);
     await execAsync(command);
