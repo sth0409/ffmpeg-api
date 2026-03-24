@@ -9,7 +9,6 @@
   },
  "dependencies": {
     "hono": "^4.6.0",
-    "@hono/node-server": "^1.13.0",
-    "multer": "^1.4.5-lts.1"
+    "@hono/node-server": "^1.13.0"
   }
 }
